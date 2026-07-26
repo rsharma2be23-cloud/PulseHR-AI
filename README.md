@@ -1,10 +1,10 @@
 # PulseHR AI
 
-PulseHR AI is a final-year Computer Science project for workforce intelligence and employee-retention decision support. It will combine a React/TypeScript frontend, an Express/TypeScript API, and carefully scoped ML and AI capabilities in later phases.
+PulseHR AI is a final-year Computer Science project for workforce intelligence and employee-retention decision support. It combines a React.js frontend, an Express.js API, and carefully scoped ML and AI capabilities in later phases.
 
 ## Current status
 
-Step 2 — Project foundation is complete. The repository currently includes a minimal React/Vite frontend with routing and Tailwind CSS, plus an Express API with a health endpoint. Database, authentication, workforce features, ML, and AI are intentionally not implemented yet.
+Step 3 — Database foundation is complete. The repository includes a minimal React/Vite frontend with routing and Tailwind CSS, an Express API with a health endpoint, MongoDB connection setup, and Mongoose data models. Authentication, workforce CRUD features, ML, and AI are intentionally not implemented yet.
 
 ## Run the frontend
 

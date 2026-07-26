@@ -64,10 +64,10 @@ Exact ownership rules (for example, direct-report mapping) must be enforced in b
 
 | Area | Technology | Reason |
 | --- | --- | --- |
-| Frontend | React, TypeScript, Tailwind CSS | Typed, component-based UI with rapid, consistent styling. |
+| Frontend | React.js, JavaScript, Tailwind CSS | Component-based UI with rapid, consistent styling. |
 | Client routing/state | React Router; Redux Toolkit only for genuine shared state | Clear routing; avoids unnecessary global-state complexity. |
 | Charts | Recharts | Straightforward dashboards and analytics charts. |
-| Backend | Node.js, Express.js, TypeScript | Familiar MERN API layer with typed application code. |
+| Backend | Node.js, Express.js, JavaScript | Familiar MERN API layer with readable application code. |
 | Validation/data access | Zod, Mongoose | Runtime request validation and MongoDB object modeling. |
 | Database | MongoDB Atlas | Managed document database suitable for workforce records. |
 | Authentication | JWT, bcrypt, RBAC | Stateless API authentication with secure password storage and role checks. |
@@ -83,11 +83,11 @@ No major dependency may be introduced without a clear purpose and explanation.
 ## 7. High-level architecture
 
 ```text
-React + TypeScript frontend
+React.js + JavaScript frontend
         |
         | HTTPS / JSON, JWT
         v
-Express + TypeScript API
+Express.js + JavaScript API
   |-- auth, RBAC, validation, business services
   |-- MongoDB Atlas (workforce data)
   |-- Python ML inference boundary (attrition, SHAP, sentiment)
@@ -105,7 +105,7 @@ The application remains a modular monolith: one frontend and one primary backend
 - Reusable UI components render forms, tables, cards, charts, and AI evidence panels.
 - React Router manages navigation.
 - Redux Toolkit is reserved for cross-cutting state such as authenticated user/session metadata or shared filters; feature-local state stays local.
-- API calls use a small typed client layer; frontend authorization improves UX but never replaces backend checks.
+- API calls use a small client service layer; frontend authorization improves UX but never replaces backend checks.
 
 ### Backend
 
@@ -288,7 +288,7 @@ The following are explicitly excluded unless requested later:
 Each phase requires explicit approval before the next one begins.
 
 1. **Project specification (current):** Create and approve this specification; no application code.
-2. **Repository and backend foundation:** Establish the minimal project structure, TypeScript Express API, environment conventions, linting/formatting choices, and health check.
+2. **Repository and backend foundation:** Establish the minimal project structure, JavaScript Express API, environment conventions, linting/formatting choices, and health check.
 3. **Database and authentication:** Add MongoDB connection, user model, JWT authentication, bcrypt passwords, RBAC middleware, and focused tests.
 4. **Core workforce modules:** Implement departments, employees, attendance, performance reviews, surveys, and feedback APIs with scoped authorization.
 5. **Frontend foundation and dashboards:** Build the React app shell, authentication flow, protected routes, and role-oriented dashboard foundations.
@@ -306,7 +306,7 @@ Each phase requires explicit approval before the next one begins.
 
 PulseHR AI is complete when it:
 
-- Provides a deployed or demonstrably runnable React/TypeScript frontend and Express/TypeScript backend.
+- Provides a deployed or demonstrably runnable React.js/JavaScript frontend and Express.js/JavaScript backend.
 - Supports secure JWT authentication, RBAC, and record-level access controls for Employee, Manager, HR, and Admin roles.
 - Manages the defined core workforce records through usable, validated interfaces/APIs.
 - Includes a reproducible attrition ML workflow with genuine documented evaluation results, persisted inference artifacts, and SHAP explanations.
@@ -317,4 +317,3 @@ PulseHR AI is complete when it:
 - Includes an HR Copilot within the same safety and authorization boundaries.
 - Has proportionate tests for authentication, authorization, critical APIs, validation, ML preprocessing/inference, RAG retrieval, agent tool selection, and structured AI responses.
 - Can be explained clearly by its author: every major component has a stated purpose, known limitation, and manual verification path.
-
