@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const { ROLES } = require("../config/roles");
 const { User } = require("../models/user.model");
 const { ApiError } = require("../utils/apiError");
 const { signAccessToken } = require("../utils/jwt");
@@ -27,7 +28,7 @@ async function registerUser({ name, email, password }) {
       name,
       email,
       passwordHash,
-      role: "employee",
+      role: ROLES.EMPLOYEE,
     });
 
     return { user: toPublicUser(user), token: signAccessToken(user) };

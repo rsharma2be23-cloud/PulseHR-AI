@@ -18,4 +18,40 @@ function validate(schema) {
   };
 }
 
-module.exports = { validate };
+function validateQuery(schema) {
+  return (request, _response, next) => {
+    const result = schema.safeParse(request.query);
+
+    if (!result.success) {
+      const details = result.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      }));
+
+      return next(new ApiError(400, "Validation failed.", details));
+    }
+
+    request.query = result.data;
+    return next();
+  };
+}
+
+function validateParams(schema) {
+  return (request, _response, next) => {
+    const result = schema.safeParse(request.params);
+
+    if (!result.success) {
+      const details = result.error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      }));
+
+      return next(new ApiError(400, "Validation failed.", details));
+    }
+
+    request.params = result.data;
+    return next();
+  };
+}
+
+module.exports = { validate, validateQuery, validateParams };
