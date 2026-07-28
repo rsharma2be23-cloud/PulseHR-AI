@@ -1,0 +1,2 @@
+export function SearchBar({ value, onChange }) { return <label className="relative block flex-1"><span className="sr-only">Search employees</span><span className="pointer-events-none absolute left-3 top-2.5 text-slate-400">⌕</span><input value={value} onChange={(event) => onChange(event.target.value)} placeholder="Search by code, designation, department…" className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-indigo-500" /></label>; }
+

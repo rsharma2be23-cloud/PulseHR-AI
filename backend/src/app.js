@@ -1,4 +1,5 @@
 const express = require("express");
+const { createCorsMiddleware } = require("./config/cors");
 const { errorHandler } = require("./middleware/error.middleware");
 const { authRouter } = require("./routes/auth.routes");
 const { attendanceRouter } = require("./routes/attendance.routes");
@@ -12,6 +13,7 @@ const { surveyRouter } = require("./routes/survey.routes");
 
 const app = express();
 
+app.use(createCorsMiddleware());
 app.use(express.json());
 app.use("/api/v1", healthRouter);
 app.use("/api/v1/auth", authRouter);

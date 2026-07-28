@@ -1,0 +1,6 @@
+import { formatCurrency, formatDate, labelOf, statusLabels } from "../../features/employees/employeeUtils";
+
+export function EmployeeCard({ employee }) {
+  return <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-wider text-indigo-600">{employee.employeeCode}</p><h2 className="mt-1 text-2xl font-bold">{labelOf(employee.user)}</h2><p className="mt-1 text-sm text-slate-500">{employee.designation}</p></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{statusLabels[employee.employmentStatus] ?? employee.employmentStatus}</span></div><div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{[["Department", labelOf(employee.department)], ["Manager", labelOf(employee.manager)], ["Date of joining", formatDate(employee.dateOfJoining)], ["Age", employee.age ?? "Not available"], ["Salary", formatCurrency(employee.salary)], ["Last promotion", formatDate(employee.lastPromotionDate)]].map(([label, value]) => <div key={label}><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p><p className="mt-1 text-sm font-medium text-slate-800">{value}</p></div>)}</div></section>;
+}
+

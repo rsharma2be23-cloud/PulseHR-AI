@@ -1,0 +1,18 @@
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { DataTable } from "../components/ui/DataTable";
+import { LoadingSkeleton } from "../components/ui/LoadingSkeleton";
+import { Pagination } from "../components/ui/Pagination";
+import { SearchBar } from "../components/ui/SearchBar";
+import { idOf, labelOf } from "../features/employees/employeeUtils";
+import { listDepartments } from "../services/departmentApi";
+import { ApiClientError } from "../services/apiClient";
+
+export function DepartmentsPage() { const navigate = useNavigate(); const [departments, setDepartments] = useState([]); const [query, setQuery] = useState(""); const [sort, setSort] = useState("name"); const [page, setPage] = useState(1); const [loading, setLoading] = useState(true); const [error, setError] = useState(""); const pageSize = 8;
+  function load() { setLoading(true); listDepartments().then((result) => { setDepartments(result.departments ?? []); setError(""); }).catch((requestError) => setError(requestError instanceof ApiClientError ? requestError.message : "Unable to load departments.")).finally(() => setLoading(false)); }
+  useEffect(() => { load(); }, []);
+  const visible = useMemo(() => { const needle = query.toLowerCase().trim(); return departments.filter((department) => !needle || `${department.name} ${department.description ?? ""} ${labelOf(department.manager, "")}`.toLowerCase().includes(needle)).sort((a, b) => String(a[sort] ?? "").localeCompare(String(b[sort] ?? ""))); }, [departments, query, sort]);
+  const pageCount = Math.max(1, Math.ceil(visible.length / pageSize)); const rows = visible.slice((page - 1) * pageSize, page * pageSize);
+  const columns = [{ key: "name", header: "Department", render: (row) => <><span className="font-semibold text-slate-900">{row.name}</span><span className="block max-w-sm truncate text-xs text-slate-500">{row.description || "No description"}</span></> }, { key: "manager", header: "Manager", render: (row) => labelOf(row.manager) }, { key: "createdAt", header: "Created", render: (row) => row.createdAt ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(row.createdAt)) : "Not available" }];
+  return <div className="space-y-6"><section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-sm font-semibold text-indigo-600">ORGANIZATION STRUCTURE</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Departments</h1><p className="mt-2 text-sm text-slate-600">Maintain the organizational units used by workforce records.</p></div><button onClick={() => navigate("/departments/new")} className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Add department</button></section><div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row"><SearchBar value={query} onChange={(value) => { setQuery(value); setPage(1); }} /><select aria-label="Sort departments" value={sort} onChange={(event) => setSort(event.target.value)} className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm"><option value="name">Name A–Z</option><option value="createdAt">Created date</option></select></div>{loading ? <LoadingSkeleton /> : error ? <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 text-sm text-rose-800" role="alert">{error}<button onClick={load} className="ml-3 font-semibold underline">Retry</button></div> : <><DataTable columns={columns} rows={rows} onRowClick={(row) => navigate(`/departments/${idOf(row)}`)} emptyMessage="No departments match your search." /><Pagination page={page} pageCount={pageCount} total={visible.length} onChange={setPage} /></>}</div>; }
+
