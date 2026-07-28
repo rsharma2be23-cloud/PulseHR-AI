@@ -15,6 +15,15 @@ import { DepartmentFormPage } from "../pages/DepartmentFormPage";
 import { AttendancePage } from "../pages/AttendancePage";
 import { AttendanceDetailsPage } from "../pages/AttendanceDetailsPage";
 import { AttendanceFormPage } from "../pages/AttendanceFormPage";
+import { PerformanceReviewsPage } from "../pages/PerformanceReviewsPage";
+import { PerformanceReviewDetailsPage } from "../pages/PerformanceReviewDetailsPage";
+import { PerformanceReviewFormPage } from "../pages/PerformanceReviewFormPage";
+import { SurveysPage } from "../pages/SurveysPage";
+import { SurveyDetailsPage } from "../pages/SurveyDetailsPage";
+import { SurveyFormPage } from "../pages/SurveyFormPage";
+import { FeedbackPage } from "../pages/FeedbackPage";
+import { FeedbackDetailsPage } from "../pages/FeedbackDetailsPage";
+import { FeedbackFormPage } from "../pages/FeedbackFormPage";
 
 function ProtectedRoute({ children, roles }) {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -51,6 +60,16 @@ export function AppRoutes() {
         <Route path="attendance/new" element={<ProtectedRoute roles={["hr", "admin"]}><AttendanceFormPage /></ProtectedRoute>} />
         <Route path="attendance/:id" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><AttendanceDetailsPage /></ProtectedRoute>} />
         <Route path="attendance/:id/edit" element={<ProtectedRoute roles={["hr", "admin"]}><AttendanceFormPage /></ProtectedRoute>} />
+        <Route path="performance-reviews" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><PerformanceReviewsPage /></ProtectedRoute>} />
+        <Route path="performance-reviews/new" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><PerformanceReviewFormPage /></ProtectedRoute>} />
+        <Route path="performance-reviews/:id" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><PerformanceReviewDetailsPage /></ProtectedRoute>} />
+        <Route path="performance-reviews/:id/edit" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><PerformanceReviewFormPage /></ProtectedRoute>} />
+        <Route path="surveys" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><SurveysPage /></ProtectedRoute>} />
+        <Route path="surveys/new" element={<ProtectedRoute><SurveyFormPage /></ProtectedRoute>} />
+        <Route path="surveys/:id" element={<ProtectedRoute><SurveyDetailsPage /></ProtectedRoute>} />
+        <Route path="feedback" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><FeedbackPage /></ProtectedRoute>} />
+        <Route path="feedback/new" element={<ProtectedRoute><FeedbackFormPage /></ProtectedRoute>} />
+        <Route path="feedback/:id" element={<ProtectedRoute><FeedbackDetailsPage /></ProtectedRoute>} />
         <Route path="not-authorized" element={<NotAuthorizedPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

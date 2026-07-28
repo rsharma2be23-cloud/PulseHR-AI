@@ -22,6 +22,9 @@ export function AppShell() {
           {['manager', 'hr', 'admin'].includes(user.role) && <NavItem to="/employees" label="Employees" onClick={() => setIsSidebarOpen(false)} />}
           {['hr', 'admin'].includes(user.role) && <NavItem to="/departments" label="Departments" onClick={() => setIsSidebarOpen(false)} />}
           {['manager', 'hr', 'admin'].includes(user.role) && <NavItem to="/attendance" label="Attendance" onClick={() => setIsSidebarOpen(false)} />}
+          {['manager', 'hr', 'admin'].includes(user.role) && <NavItem to="/performance-reviews" label="Performance reviews" onClick={() => setIsSidebarOpen(false)} />}
+          {['manager', 'hr', 'admin'].includes(user.role) && <NavItem to="/surveys" label="Surveys" onClick={() => setIsSidebarOpen(false)} />}
+          {['manager', 'hr', 'admin'].includes(user.role) && <NavItem to="/feedback" label="Feedback" onClick={() => setIsSidebarOpen(false)} />}
         </nav>
         <div className="mt-auto rounded-xl border border-slate-800 bg-slate-900 p-3 text-xs leading-5 text-slate-400">
           <span className="font-semibold text-slate-200">Advisory platform</span><br />

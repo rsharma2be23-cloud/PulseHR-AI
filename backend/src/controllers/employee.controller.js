@@ -6,6 +6,7 @@ const {
   listEmployees,
   updateEmployee,
 } = require("../services/employee.service");
+const { predict, history } = require("./attritionPrediction.controller");
 
 async function create(request, response, next) {
   try {
@@ -47,4 +48,4 @@ async function update(request, response, next) {
   }
 }
 
-module.exports = { create, getById, list, update };
+module.exports = { create, getById, list, update, predict, history };

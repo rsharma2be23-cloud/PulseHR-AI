@@ -10,6 +10,7 @@ const { healthRouter } = require("./routes/health.routes");
 const { performanceReviewRouter } = require("./routes/performanceReview.routes");
 const { rbacRouter } = require("./routes/rbac.routes");
 const { surveyRouter } = require("./routes/survey.routes");
+const { attritionPredictionRouter } = require("./routes/attritionPrediction.routes");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/v1/feedback", feedbackRouter);
 app.use("/api/v1/rbac", rbacRouter);
 app.use("/api/v1/performance-reviews", performanceReviewRouter);
 app.use("/api/v1/surveys", surveyRouter);
+app.use("/api/v1/attrition-predictions", attritionPredictionRouter);
 app.use(errorHandler);
 
 module.exports = app;

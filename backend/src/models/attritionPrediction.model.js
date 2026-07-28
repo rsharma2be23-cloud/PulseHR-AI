@@ -11,10 +11,12 @@ const topFactorSchema = new Schema(
 const attritionPredictionSchema = new Schema(
   {
     employee: { type: Schema.Types.ObjectId, ref: "Employee", required: true },
-    riskScore: { type: Number, required: true, min: 0, max: 1 },
-    riskLevel: { type: String, required: true, enum: ["low", "moderate", "high", "critical"] },
+    probability: { type: Number, required: true, min: 0, max: 1 },
+    riskLevel: { type: String, required: true, enum: ["low", "medium", "high"] },
+    prediction: { type: String, required: true, enum: ["attrition", "stay"] },
+    threshold: { type: Number, required: true, min: 0, max: 1 },
     modelVersion: { type: String, required: true, trim: true, maxlength: 100 },
-    topFactors: { type: [topFactorSchema], default: [] },
+    mappingDefaults: { type: [String], default: [] },
     predictedAt: { type: Date, required: true, default: Date.now },
   },
   { timestamps: true },
