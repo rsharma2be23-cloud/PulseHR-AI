@@ -4,6 +4,9 @@ const topFactorSchema = new Schema(
   {
     feature: { type: String, required: true, trim: true, maxlength: 100 },
     contribution: { type: Number, required: true },
+    direction: { type: String, enum: ["increase risk", "decrease risk"], required: true },
+    importance: { type: Number, required: true, min: 0 },
+    rank: { type: Number, min: 1 },
   },
   { _id: false },
 );
@@ -17,6 +20,12 @@ const attritionPredictionSchema = new Schema(
     threshold: { type: Number, required: true, min: 0, max: 1 },
     modelVersion: { type: String, required: true, trim: true, maxlength: 100 },
     mappingDefaults: { type: [String], default: [] },
+    explanations: { type: [topFactorSchema], default: [] },
+    shapValues: {
+      type: [{ feature: { type: String, required: true }, value: { type: Number, required: true } }],
+      default: [],
+      _id: false,
+    },
     predictedAt: { type: Date, required: true, default: Date.now },
   },
   { timestamps: true },

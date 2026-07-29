@@ -1,7 +1,10 @@
 from pathlib import Path
+from functools import lru_cache
 
 import joblib
+import numpy as np
 from fastapi import FastAPI, HTTPException
+import shap
 
 from src.schemas import EmployeeFeatures
 
@@ -15,6 +18,7 @@ app = FastAPI(
 )
 
 
+@lru_cache(maxsize=1)
 def load_model_artifact() -> dict:
     if not MODEL_PATH.exists():
         raise FileNotFoundError(
@@ -22,6 +26,58 @@ def load_model_artifact() -> dict:
         )
 
     return joblib.load(MODEL_PATH)
+
+
+@lru_cache(maxsize=1)
+def get_shap_explainer():
+    """Build one linear SHAP explainer for the deployed pipeline.
+
+    The pipeline's numeric values are standardized and its categorical values
+    are one-hot encoded, so a zero transformed row is a stable, model-native
+    baseline (mean numeric values and the dropped categorical reference level).
+    """
+    artifact = load_model_artifact()
+    pipeline = artifact["pipeline"]
+    preprocessor = pipeline.named_steps["preprocessor"]
+    classifier = pipeline.named_steps.get("model", pipeline.named_steps.get("classifier"))
+    transformed_feature_count = len(preprocessor.get_feature_names_out())
+    masker = np.zeros((1, transformed_feature_count), dtype=float)
+    return shap.LinearExplainer(classifier, masker)
+
+
+def _human_label(transformed_name: str, raw_features: list[str]) -> str:
+    short_name = transformed_name.split("__")[-1]
+    for raw_feature in sorted(raw_features, key=len, reverse=True):
+        if short_name == raw_feature:
+            return raw_feature
+        if short_name.startswith(f"{raw_feature}_"):
+            category = short_name[len(raw_feature) + 1:].replace("_", " ")
+            return f"{raw_feature} = {category}"
+    return short_name.replace("_", " ")
+
+
+def build_explanations(employee_df, artifact: dict) -> list[dict]:
+    pipeline = artifact["pipeline"]
+    preprocessor = pipeline.named_steps["preprocessor"]
+    transformed = preprocessor.transform(employee_df)
+    values = get_shap_explainer().shap_values(transformed)
+    if isinstance(values, list):
+        values = values[-1]
+    values = np.asarray(values)[0]
+    raw_features = list(employee_df.columns)
+    explanations = []
+    for name, contribution in zip(preprocessor.get_feature_names_out(), values):
+        contribution = float(contribution)
+        if abs(contribution) < 1e-10:
+            continue
+        explanations.append({
+            "feature": _human_label(name, raw_features),
+            "contribution": round(contribution, 6),
+            "direction": "increase risk" if contribution > 0 else "decrease risk",
+            "importance": round(abs(contribution), 6),
+        })
+    explanations.sort(key=lambda item: item["importance"], reverse=True)
+    return [dict(item, rank=index + 1) for index, item in enumerate(explanations[:10])]
 
 
 @app.get("/health")
@@ -70,6 +126,7 @@ def predict(features: EmployeeFeatures) -> dict:
             else "stay"
         )
 
+        explanations = build_explanations(employee_df, artifact)
         return {
             "attritionProbability": round(
                 probability,
@@ -79,6 +136,12 @@ def predict(features: EmployeeFeatures) -> dict:
             "prediction": prediction,
             "decisionThreshold": decision_threshold,
             "modelVersion": artifact["model_version"],
+            "explanations": explanations,
+            "topContributingFeatures": explanations,
+            "shapValues": [
+                {"feature": item["feature"], "value": item["contribution"]}
+                for item in explanations
+            ],
         }
 
     except FileNotFoundError as error:

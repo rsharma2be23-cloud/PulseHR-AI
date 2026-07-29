@@ -24,6 +24,8 @@ import { SurveyFormPage } from "../pages/SurveyFormPage";
 import { FeedbackPage } from "../pages/FeedbackPage";
 import { FeedbackDetailsPage } from "../pages/FeedbackDetailsPage";
 import { FeedbackFormPage } from "../pages/FeedbackFormPage";
+import { CopilotPage } from "../pages/CopilotPage";
+import { ManagerCoachPage } from "../pages/ManagerCoachPage";
 
 function ProtectedRoute({ children, roles }) {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -70,6 +72,8 @@ export function AppRoutes() {
         <Route path="feedback" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><FeedbackPage /></ProtectedRoute>} />
         <Route path="feedback/new" element={<ProtectedRoute><FeedbackFormPage /></ProtectedRoute>} />
         <Route path="feedback/:id" element={<ProtectedRoute><FeedbackDetailsPage /></ProtectedRoute>} />
+        <Route path="copilot" element={<ProtectedRoute><CopilotPage /></ProtectedRoute>} />
+        <Route path="manager-coach" element={<ProtectedRoute roles={["manager", "hr", "admin"]}><ManagerCoachPage /></ProtectedRoute>} />
         <Route path="not-authorized" element={<NotAuthorizedPage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

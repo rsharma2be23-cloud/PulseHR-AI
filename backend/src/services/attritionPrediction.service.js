@@ -8,7 +8,7 @@ const { buildAttritionFeatures } = require("./attritionFeature.service");
 async function createAttritionPrediction(employee) {
   const { features, defaults } = await buildAttritionFeatures(employee);
   const response = await predictAttrition(features);
-  return AttritionPrediction.create({ employee: employee._id, probability: response.attritionProbability, riskLevel: response.riskLevel, prediction: response.prediction, threshold: response.decisionThreshold, modelVersion: response.modelVersion, mappingDefaults: defaults });
+  return AttritionPrediction.create({ employee: employee._id, probability: response.attritionProbability, riskLevel: response.riskLevel, prediction: response.prediction, threshold: response.decisionThreshold, modelVersion: response.modelVersion, mappingDefaults: defaults, explanations: response.explanations, shapValues: response.shapValues });
 }
 
 async function getPredictionHistory(employeeId) { return AttritionPrediction.find({ employee: employeeId }).sort({ predictedAt: -1 }); }
@@ -30,4 +30,3 @@ async function listLatestPredictions(requester) {
 }
 
 module.exports = { createAttritionPrediction, getPredictionHistory, listLatestPredictions };
-

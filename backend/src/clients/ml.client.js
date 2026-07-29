@@ -12,7 +12,11 @@ function validatePrediction(payload) {
     && ["attrition", "stay"].includes(payload.prediction)
     && typeof payload.decisionThreshold === "number"
     && typeof payload.modelVersion === "string";
-  if (!valid) throw new ApiError(502, "Attrition prediction service returned an invalid response.");
+  const explanations = Array.isArray(payload.explanations) ? payload.explanations : [];
+  const validExplanations = explanations.every((item) => item && typeof item.feature === "string"
+    && typeof item.contribution === "number" && ["increase risk", "decrease risk"].includes(item.direction)
+    && typeof item.importance === "number");
+  if (!valid || !validExplanations) throw new ApiError(502, "Attrition prediction service returned an invalid response.");
   return payload;
 }
 
@@ -35,4 +39,3 @@ async function predictAttrition(features) {
 }
 
 module.exports = { predictAttrition };
-
