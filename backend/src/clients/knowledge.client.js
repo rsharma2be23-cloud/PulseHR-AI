@@ -2,7 +2,10 @@ const { ApiError } = require("../utils/apiError");
 
 function serviceUrl() {
   const value = process.env.HR_KNOWLEDGE_URL;
-  if (!value) throw new ApiError(503, "HR knowledge service is not configured.");
+  if (!value) {
+    console.error("[HR Knowledge] HR_KNOWLEDGE_URL is not configured.");
+    throw new ApiError(503, "HR knowledge service is not configured.");
+  }
   return value.replace(/\/$/, "");
 }
 
@@ -32,8 +35,15 @@ async function searchKnowledge(query) {
     if (!response.ok) throw new ApiError(response.status === 503 ? 503 : 502, "HR knowledge service could not process this search.");
     return validateResponse(payload);
   } catch (error) {
-    if (error instanceof ApiError) throw error;
-    if (error.name === "AbortError") throw new ApiError(504, "HR knowledge service timed out.");
+    if (error instanceof ApiError) {
+      console.error(`[HR Knowledge] Retrieval failed: ${error.message}`);
+      throw error;
+    }
+    if (error.name === "AbortError") {
+      console.error("[HR Knowledge] Retrieval request timed out.");
+      throw new ApiError(504, "HR knowledge service timed out.");
+    }
+    console.error(`[HR Knowledge] Retrieval request failed: ${error.message}`);
     throw new ApiError(503, "HR knowledge service is unavailable.");
   } finally { clearTimeout(timeout); }
 }
